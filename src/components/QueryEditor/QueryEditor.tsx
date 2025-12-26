@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { sql } from '@codemirror/lang-sql';
-import { useQuery } from '../../context/QueryContext';
+import { useQueryContext } from '../../context/QueryContext';
 import { sampleQueries } from '../../mocks';
 import styles from './QueryEditor.module.css';
 
 export const QueryEditor = () => {
-    const { sql: sqlValue, setSql, runQuery, isLoading } = useQuery();
+    const { sql: sqlValue, setSql, runQuery, isLoading } = useQueryContext();
 
     // Load sample queries on mount
     useEffect(() => {
