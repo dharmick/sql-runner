@@ -1,5 +1,18 @@
+/**
+ * Mock Query Execution Simulation
+ * 
+ * This file simulates a real backend API for query execution.
+ * 
+ * Features:
+ * - Simulates async query execution lifecycle (queued → running → completed/failed)
+ * - Supports query cancellation
+ * - Simulates execution delays and timeouts
+ * - Provides cursor-based pagination for result rows
+ * - Maps SQL queries to appropriate data sources
+ */
+
 import type { QueryExecution, FetchRowsResponse, DataSource } from '../types/index';
-import { sampleQueries } from '../mocks';
+import { sampleQueries } from './sampleQueries';
 import { sleep } from '../utils/common';
 
 let currentExecution: {

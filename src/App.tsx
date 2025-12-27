@@ -1,5 +1,5 @@
 import { SplitPane, Pane } from 'react-split-pane';
-import { QueryProvider } from './context/QueryContext';
+import { QueryProvider } from './context/QueryProvider';
 import { QueryEditor } from './components/QueryEditor/QueryEditor';
 import { ResultsTable } from './components/ResultsTable/ResultsTable';
 import './App.css';

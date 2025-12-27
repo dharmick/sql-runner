@@ -6,12 +6,12 @@ import { sampleQueries } from '../../mocks';
 import styles from './QueryEditor.module.css';
 
 export const QueryEditor = () => {
-    const { sql: sqlValue, setSql, runQuery, isLoading } = useQueryContext();
+    const { editorValue, setEditorValue, runQuery, isLoading } = useQueryContext();
 
     // Load sample queries on mount
     useEffect(() => {
         const allQueries = sampleQueries.map(q => `-- ${q.title}\n${q.sql}`).join('\n\n');
-        setSql(allQueries);
+        setEditorValue(allQueries);
     }, []);
 
     const handleRunQuery = () => {
@@ -22,7 +22,7 @@ export const QueryEditor = () => {
             runQuery(selection.trim());
         } else {
             // Run first query (split by semicolon)
-            const queries = sqlValue.split(';')
+            const queries = editorValue.split(';')
                 .map(q => q.trim())
                 .filter(q => q.length > 0);
 
@@ -43,11 +43,11 @@ export const QueryEditor = () => {
         <div className={styles.container}>
             <div className={styles.editor}>
                 <CodeMirror
-                    value={sqlValue}
+                    value={editorValue}
                     height="100%"
                     onKeyDown={handleKeyDown}
                     extensions={[sql()]}
-                    onChange={(value) => setSql(value)}
+                    onChange={(value) => setEditorValue(value)}
                     basicSetup={{
                         lineNumbers: true,
                         highlightActiveLineGutter: true,
