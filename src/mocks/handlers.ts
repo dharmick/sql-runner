@@ -58,7 +58,7 @@ export const handlers = [
         try {
             const url = new URL(request.url);
             const executionId = url.searchParams.get('executionId');
-            const cursor = url.searchParams.get('cursor');
+            const offset = parseInt(url.searchParams.get('offset') || '0', 10);
             const limit = parseInt(url.searchParams.get('limit') || '50', 10);
 
             if (!executionId) {
@@ -68,7 +68,7 @@ export const handlers = [
                 );
             }
 
-            const result = await fetchRows(executionId, cursor, limit);
+            const result = await fetchRows(executionId, offset, limit);
 
             // Add a small delay to simulate network latency
             await delay(100);

@@ -44,14 +44,12 @@ export const getQueryExecution = async (executionId: string): Promise<QueryExecu
 
 export const fetchRows = async (
     executionId: string,
-    cursor: string | null = null,
+    offset: number = 0,
     limit: number = 50
 ): Promise<FetchRowsResponse> => {
     const url = new URL(API_ENDPOINTS.FETCH_ROWS, window.location.origin);
     url.searchParams.set('executionId', executionId);
-    if (cursor) {
-        url.searchParams.set('cursor', cursor);
-    }
+    url.searchParams.set('offset', offset.toString());
     url.searchParams.set('limit', limit.toString());
 
     const response = await fetch(url.toString(), {

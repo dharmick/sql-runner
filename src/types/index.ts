@@ -32,8 +32,9 @@ export interface QueryExecution {
 
 export interface FetchRowsResponse {
     rows: Row[];
-    nextCursor: string | null;
-    hasMore: boolean;
+    offset: number;
+    limit: number;
+    totalRows: number;
 }
 
 export interface SampleQuery {

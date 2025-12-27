@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useQueryContext } from '../../context/QueryContext';
+import { useDebounce } from '../../hooks';
 import { LoadingScreen } from './LoadingScreen';
 import { TableCell } from './TableCell';
 import { ResultsMetadata } from './ResultsMetadata';
@@ -10,32 +11,39 @@ import styles from './ResultsTable.module.css';
 import { DEFAULT_COLUMN_WIDTH } from '../../constants/constants';
 
 export const ResultsTable = () => {
-    const { execution, rows, isLoading, error, loadMoreRows, hasMore } = useQueryContext();
+    const { execution, rowsMap, isLoading, error, loadMoreRows } = useQueryContext();
     const parentRef = useRef<HTMLDivElement>(null);
     const [showScrollShadow, setShowScrollShadow] = useState(false);
     const [modalState, setModalState] = useState<{ content: string; type: ColumnType } | null>(null);
 
     const rowVirtualizer = useVirtualizer({
-        count: rows.length,
+        count: execution?.totalRows || 0,
         getScrollElement: () => parentRef.current,
         estimateSize: () => 40,
         overscan: 10,
     });
 
-    // Handle scroll to load more rows
+    // Handle scroll to load more rows (debounced)
+    const debouncedLoadMoreRows = useDebounce(
+        (startIndex: number, endIndex: number) => {
+            loadMoreRows(startIndex, endIndex);
+        },
+        550
+    );
+
     useEffect(() => {
-        const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse();
+        const virtualItems = rowVirtualizer.getVirtualItems();
+        if (virtualItems.length === 0) return;
 
-        if (!lastItem) return;
+        const startIndex = virtualItems[0].index;
+        const endIndex = virtualItems[virtualItems.length - 1].index;
 
-        if (
-            lastItem.index >= rows.length - 1 &&
-            hasMore &&
-            !isLoading
-        ) {
-            loadMoreRows();
-        }
-    }, [hasMore, loadMoreRows, rows.length, rowVirtualizer, isLoading]);
+        debouncedLoadMoreRows(startIndex, endIndex);
+    }, [
+        rowVirtualizer.range?.startIndex,
+        rowVirtualizer.range?.endIndex,
+        debouncedLoadMoreRows
+    ]);
 
     // Handle horizontal scroll shadow
     useEffect(() => {
@@ -66,7 +74,7 @@ export const ResultsTable = () => {
         );
     }
 
-    if (!execution || rows.length === 0) {
+    if (!execution || (execution.totalRows === 0)) {
         return (
             <div className={styles.emptyContainer}>
                 <div className={styles.emptyIcon}>📊</div>
@@ -114,7 +122,30 @@ export const ResultsTable = () => {
                         }}
                     >
                         {virtualItems.map((virtualRow) => {
-                            const row = rows[virtualRow.index];
+                            const row = rowsMap.get(virtualRow.index);
+
+                            // Show loading placeholder if row not loaded yet
+                            if (!row) {
+                                return (
+                                    <tr
+                                        key={virtualRow.index}
+                                        className={styles.row}
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            width: '100%',
+                                            height: `${virtualRow.size}px`,
+                                            transform: `translateY(${virtualRow.start}px)`,
+                                        }}
+                                    >
+                                        <td colSpan={columns.length} className={styles.loadingCell}>
+                                            Loading...
+                                        </td>
+                                    </tr>
+                                );
+                            }
+
                             return (
                                 <tr
                                     key={virtualRow.index}

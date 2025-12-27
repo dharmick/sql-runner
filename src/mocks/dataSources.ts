@@ -3,7 +3,7 @@ import { sleep } from '../utils/common';
 import { generateUsers, generateProducts, generateTransactions } from './generators';
 
 export const usersDataSource: DataSource = {
-    totalRows: 100000,
+    totalRows: 1000,
     executionTimeMs: 2000,
     columns: [
         { name: 'id', type: 'number' },

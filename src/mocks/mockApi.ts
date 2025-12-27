@@ -28,9 +28,6 @@ let currentExecution: {
 
 let executionCounter = 0;
 
-const encodeCursor = (offset: number): string => btoa(String(offset));
-const decodeCursor = (cursor: string): number => parseInt(atob(cursor), 10);
-
 const getDataSourceForSQL = (sql: string): DataSource => {
     const lowerSQL = sql.toLowerCase().trim();
 
@@ -149,7 +146,7 @@ export const getQueryExecution = async (executionId: string): Promise<QueryExecu
 
 export const fetchRows = async (
     executionId: string,
-    cursor: string | null,
+    offset: number = 0,
     limit: number = 50
 ): Promise<FetchRowsResponse> => {
     await sleep(100); // Simulate network delay
@@ -162,16 +159,13 @@ export const fetchRows = async (
         throw new Error('Query not completed yet');
     }
 
-    const offset = cursor ? decodeCursor(cursor) : 0;
     const rows = await currentExecution.dataSource.fetchRows(offset, limit);
-
-    const nextOffset = offset + rows.length;
-    const hasMore = nextOffset < currentExecution.dataSource.totalRows;
 
     return {
         rows,
-        nextCursor: hasMore ? encodeCursor(nextOffset) : null,
-        hasMore
+        offset,
+        limit,
+        totalRows: currentExecution.dataSource.totalRows
     };
 };
 
