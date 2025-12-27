@@ -10,3 +10,5 @@ export const API_ENDPOINTS = {
     FETCH_ROWS: '/api/query/rows',
     CANCEL_EXECUTION: '/api/query/cancel',
 } as const;
+
+export const QUERY_EXECUTION_POLLING_INTERVAL = 1000;
