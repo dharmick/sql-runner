@@ -1,7 +1,7 @@
-import { useQueryContext } from '../../context/QueryContext';
-import { formatNumber, formatExecutionTime } from '../../utils/formatters';
-import { ExportDropdown } from '../common/ExportDropdown';
-import { exportAsCSV, exportAsJSON } from '../../utils/exportUtils';
+import { useQueryContext } from '../../../context/QueryContext';
+import { formatNumber, formatExecutionTime } from '../../../utils/formatters';
+import { ExportDropdown } from '../../common/ExportDropdown';
+import { exportAsCSV, exportAsJSON } from '../../../utils/exportUtils';
 import styles from './ResultsMetadata.module.css';
 
 export const ResultsMetadata = () => {

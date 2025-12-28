@@ -1,7 +1,7 @@
-import { MAX_COLUMN_WIDTH, MIN_COLUMN_WIDTH } from '../../constants/constants';
-import { useResizable } from '../../hooks';
-import type { ColumnType } from '../../types';
-import styles from './ResultsTable.module.css';
+import { MAX_COLUMN_WIDTH, MIN_COLUMN_WIDTH } from '../../../constants/constants';
+import { useResizable } from '../../../hooks';
+import type { ColumnType } from '../../../types';
+import styles from './ResizableColumnHeader.module.css';
 
 interface ResizableColumnHeaderProps {
     columnName: string;

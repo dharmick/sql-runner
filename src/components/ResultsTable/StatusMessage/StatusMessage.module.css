@@ -1,0 +1,37 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: #fafafa;
+    text-align: center;
+    padding: 40px;
+}
+
+.icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #212121;
+    margin: 0 0 8px 0;
+}
+
+.message {
+    font-size: 14px;
+    color: #757575;
+    margin: 0;
+}
+
+/* Error variations */
+.errorIcon {
+    color: #d32f2f;
+}
+
+.errorTitle {
+    color: #d32f2f;
+}

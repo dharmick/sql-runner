@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import type { ColumnType } from '../../types/index';
+import type { ColumnType } from '../../../types/index';
 import styles from './ComplexDataModal.module.css';
 
 type ComplexDataModalProps = {

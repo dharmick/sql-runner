@@ -1,6 +1,6 @@
 import React from 'react';
-import type { ColumnType } from '../../types/index';
-import { formatNumber, formatEpoch, truncateString, formatJSON, truncateArray } from '../../utils/formatters';
+import type { ColumnType } from '../../../types/index';
+import { formatNumber, formatEpoch, truncateString, formatJSON, truncateArray } from '../../../utils/formatters';
 import styles from './TableCell.module.css';
 
 interface TableCellProps {

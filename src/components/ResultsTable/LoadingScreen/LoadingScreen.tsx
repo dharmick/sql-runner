@@ -1,8 +1,9 @@
-import { useQueryContext } from '../../context/QueryContext';
+import { useQueryContext } from '../../../context/QueryContext';
 import styles from './LoadingScreen.module.css';
 
 export const LoadingScreen = () => {
     const { cancelQuery, toggleNotify, notifyEnabled } = useQueryContext();
+    console.log("loadingggggg")
 
     return (
         <div className={styles.container}>

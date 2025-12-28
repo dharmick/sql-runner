@@ -1,0 +1,35 @@
+.tbody {
+    position: relative;
+    display: block;
+}
+
+.row {
+    display: flex;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.row:hover {
+    background: #f5f5f5;
+}
+
+.cell {
+    border-right: 1px solid #f0f0f0;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.numberCell {
+    text-align: right;
+}
+
+.stickyColumn {
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    background: white;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+}
+
+.row:hover .stickyColumn {
+    background: #f5f5f5;
+}
