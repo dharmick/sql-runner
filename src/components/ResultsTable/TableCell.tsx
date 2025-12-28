@@ -36,7 +36,7 @@ export const TableCell: React.FC<TableCellProps> = ({ value, type, onShowModal }
             case 'json':
                 return (
                     <span className={styles.clickable} onClick={handleClick}>
-                        {truncateString(JSON.stringify(value), 40)}
+                        {truncateString(JSON.stringify(value), 60)}
                     </span>
                 );
 
@@ -56,7 +56,7 @@ export const TableCell: React.FC<TableCellProps> = ({ value, type, onShowModal }
 
             case 'string':
             default:
-                return <span>{truncateString(String(value), 50)}</span>;
+                return <span>{truncateString(String(value), 60)}</span>;
         }
     };
 

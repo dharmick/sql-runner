@@ -6,6 +6,7 @@ import { LoadingScreen } from './LoadingScreen';
 import { TableCell } from './TableCell';
 import { ResultsMetadata } from './ResultsMetadata';
 import { ComplexDataModal } from './ComplexDataModal';
+import { ResizableColumnHeader } from './ResizableColumnHeader';
 import type { ColumnType } from '../../types/index';
 import styles from './ResultsTable.module.css';
 import { DEFAULT_COLUMN_WIDTH } from '../../constants/constants';
@@ -15,6 +16,8 @@ export const ResultsTable = () => {
     const parentRef = useRef<HTMLDivElement>(null);
     const [showScrollShadow, setShowScrollShadow] = useState(false);
     const [modalState, setModalState] = useState<{ content: string; type: ColumnType } | null>(null);
+    const [columnWidths, setColumnWidths] = useState<Record<string, number>>({});
+    const [resizingColumn, setResizingColumn] = useState<string | null>(null);
 
     const rowVirtualizer = useVirtualizer({
         count: execution?.totalRows || 0,
@@ -95,6 +98,14 @@ export const ResultsTable = () => {
         setModalState(null);
     };
 
+    const handleColumnWidthChange = (columnName: string, newWidth: number) => {
+        setColumnWidths(prev => ({ ...prev, [columnName]: newWidth }));
+    };
+
+    const handleResizingChange = (columnName: string | null) => {
+        setResizingColumn(columnName);
+    };
+
     return (
         <div className={styles.container}>
             <div ref={parentRef} className={styles.tableContainer}>
@@ -102,16 +113,16 @@ export const ResultsTable = () => {
                     <thead className={`${styles.thead} ${showScrollShadow ? styles.scrollShadow : ''}`}>
                         <tr className={styles.headerRow}>
                             {columns.map((column, index) => (
-                                <th
+                                <ResizableColumnHeader
                                     key={column.name}
-                                    className={`${styles.headerCell} ${index === 0 ? styles.stickyColumn : ''}`}
-                                    style={{ width: DEFAULT_COLUMN_WIDTH }}
-                                >
-                                    <div className={styles.headerContent}>
-                                        <span className={styles.columnName}>{column.name}</span>
-                                        <span className={styles.columnType}>{column.type}</span>
-                                    </div>
-                                </th>
+                                    columnName={column.name}
+                                    columnType={column.type}
+                                    isSticky={index === 0}
+                                    currentWidth={columnWidths[column.name] || DEFAULT_COLUMN_WIDTH}
+                                    onWidthChange={handleColumnWidthChange}
+                                    onResizingChange={handleResizingChange}
+                                    isResizing={resizingColumn === column.name}
+                                />
                             ))}
                         </tr>
                     </thead>
@@ -164,7 +175,7 @@ export const ResultsTable = () => {
                                             key={column.name}
                                             className={`${styles.cell} ${colIndex === 0 ? styles.stickyColumn : ''} ${column.type === 'number' ? styles.numberCell : ''
                                                 }`}
-                                            style={{ width: DEFAULT_COLUMN_WIDTH }}
+                                            style={{ width: columnWidths[column.name] || DEFAULT_COLUMN_WIDTH }}
                                         >
                                             <TableCell value={row[column.name]} type={column.type} onShowModal={handleShowModal} />
                                         </td>
