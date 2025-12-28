@@ -1,8 +1,5 @@
-import { useState, useCallback } from 'react';
-
-import { requestNotificationPermission } from '../utils/notifications';
 import { type QueryContextType, QueryContext } from './QueryContext';
-import { useLocalStoragePersistence, useQueryExecutor } from '../hooks';
+import { useLocalStoragePersistence, useQueryExecutor, useNotification } from '../hooks';
 
 type QueryProviderProps = {
     children: React.ReactNode;
@@ -10,7 +7,7 @@ type QueryProviderProps = {
 
 export const QueryProvider = ({ children }: QueryProviderProps) => {
     const [editorValue, setEditorValue] = useLocalStoragePersistence('query-editor-value', '');
-    const [notifyEnabled, setNotifyEnabled] = useState(false);
+    const { notifyEnabled, toggleNotify, resetNotify } = useNotification();
 
     const {
         execution,
@@ -20,18 +17,7 @@ export const QueryProvider = ({ children }: QueryProviderProps) => {
         runQuery,
         cancelQuery,
         loadMoreRows
-    } = useQueryExecutor(notifyEnabled);
-
-    const toggleNotify = useCallback(async () => {
-        if (!notifyEnabled) {
-            const granted = await requestNotificationPermission();
-            if (granted) {
-                setNotifyEnabled(true);
-            }
-        } else {
-            setNotifyEnabled(false);
-        }
-    }, [notifyEnabled]);
+    } = useQueryExecutor({ notifyEnabled, resetNotify });
 
     const value: QueryContextType = {
         editorValue,

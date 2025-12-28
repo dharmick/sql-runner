@@ -6,7 +6,12 @@ import { showQueryCompleteNotification, showQueryFailedNotification } from '../u
 import { QUERY_EXECUTION_POLLING_INTERVAL } from '../constants/constants';
 import type { QueryExecution, Row } from '../types';
 
-export const useQueryExecutor = (notifyEnabled: boolean) => {
+type UseQueryExecutorParams = {
+    notifyEnabled: boolean;
+    resetNotify: () => void;
+};
+
+export const useQueryExecutor = ({ notifyEnabled, resetNotify }: UseQueryExecutorParams) => {
     const [execution, setExecution] = useState<QueryExecution | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -75,6 +80,8 @@ export const useQueryExecutor = (notifyEnabled: boolean) => {
             setExecution(null);
             setRowsMap(new Map());
             resetLoadingRanges();
+            resetNotify();
+
             const { executionId } = await api.createQueryExecution(queryToRun);
 
             startPolling(() => pollExecution(executionId));
@@ -82,7 +89,7 @@ export const useQueryExecutor = (notifyEnabled: boolean) => {
             setIsLoading(false);
             setError(err instanceof Error ? err.message : 'Failed to create query execution');
         }
-    }, [pollExecution, startPolling, resetLoadingRanges, setRowsMap]);
+    }, [pollExecution, startPolling, resetLoadingRanges, setRowsMap, resetNotify]);
 
     const cancelQuery = useCallback(async () => {
         if (!execution) return;

@@ -11,7 +11,7 @@ export type QueryContextType = {
     notifyEnabled: boolean;
     runQuery: (queryToRun: string) => Promise<void>;
     cancelQuery: () => Promise<void>;
-    toggleNotify: () => void;
+    toggleNotify: () => Promise<void>;
     loadMoreRows: (startIndex: number, endIndex: number) => Promise<void>;
 }
 
