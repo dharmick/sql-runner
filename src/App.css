@@ -43,6 +43,20 @@
   transition: all 0.2s ease;
 }
 
+/* Horizontal divider (for sidebar) */
+.split-pane-divider.horizontal {
+  width: 6px;
+  margin: 0 -3px;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  cursor: col-resize;
+}
+
+.split-pane-divider.horizontal:hover {
+  background: #1976d2;
+}
+
+/* Vertical divider (for editor/results) */
 .split-pane-divider.vertical {
   height: 6px;
   margin: -3px 0;
@@ -60,6 +74,7 @@
   outline-offset: -2px;
 }
 
+.sidebar-pane,
 .editor-pane,
 .results-pane {
   height: 100%;
