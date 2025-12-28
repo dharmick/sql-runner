@@ -3,7 +3,7 @@ import * as api from '../services/api';
 import type { QueryExecution, Row } from '../types';
 import { showQueryCompleteNotification, showQueryFailedNotification, requestNotificationPermission } from '../utils/notifications';
 import { type QueryContextType, QueryContext } from './QueryContext';
-import { usePolling } from '../hooks';
+import { usePolling, useLocalStoragePersistence } from '../hooks';
 import { QUERY_EXECUTION_POLLING_INTERVAL } from '../constants/constants';
 
 type QueryProviderProps = {
@@ -11,7 +11,7 @@ type QueryProviderProps = {
 };
 
 export const QueryProvider = ({ children }: QueryProviderProps) => {
-    const [editorValue, setEditorValue] = useState('');
+    const [editorValue, setEditorValue] = useLocalStoragePersistence('query-editor-value', '');
     const [execution, setExecution] = useState<QueryExecution | null>(null);
     const [rowsMap, setRowsMap] = useState<Map<number, Row>>(new Map());
     const [isLoading, setIsLoading] = useState(false);

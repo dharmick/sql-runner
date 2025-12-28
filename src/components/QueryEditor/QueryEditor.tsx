@@ -12,6 +12,7 @@ export const QueryEditor = () => {
 
     // Load sample queries on mount
     useEffect(() => {
+        if (editorValue) return;
         const allQueries = sampleQueries.map(q => `-- ${q.title}\n${q.sql}`).join('\n\n');
         setEditorValue(allQueries);
     }, []);
