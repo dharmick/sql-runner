@@ -68,16 +68,25 @@ A high-performance, web-based SQL query runner component designed for speed and 
 -   **Smart Row Caching**: Map-based cache provides O(1) row lookups and tracks currently loading pages to prevent duplicate fetch requests, ensuring each data page is fetched exactly once.
 -   **Memoization**: `useMemo` and `useCallback` are strategically used to prevent unnecessary re-renders of components.
 
-## Page Load Time
+## Performance Metrics
 
-Typical load time: **< 300ms** (Locally served)
-*Measured via Chrome DevTools Network tab (Load event).*
+### Page load time
+- Performance tested using throttled CPU and network settings. 
+- Recorded a LCP of 1.34s.
 
-To measure it yourself:
-1. Open Chrome DevTools (F12).
-2. Go to the **Network** tab.
-3. Refresh the page.
-4. Check the red "Load" metric at the bottom of the pane.
+<img src="./assets/lcp.png" />
+
+### Interaction performance
+- Ran a 100-second interaction trace covering heavy scrolling, query loading, column and panel resizing
+- Observed an INP of 64 ms and CLS score of 0.
+
+<img src="./assets/inp-cls.png" />
+
+### Overall performance
+- Recorded a 97% overall Lighthouse performance score.
+
+<img src="./assets/lighthouse.png" />
+
 
 ## Code Quality & Maintainability
 
