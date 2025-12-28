@@ -2,7 +2,13 @@
 
 A high-performance, web-based SQL query runner component designed for speed and usability. This application allows users to execute SQL queries and visualize results efficiently, even with large datasets.
 
-## 🚀 Features
+## Walkthrough
+
+-   **Live Demo**: [https://sql-client.netlify.app](https://sql-client.netlify.app)
+
+-   **Walkthrough Video**: Coming soon
+
+## Features
 
 ### Core Features
 *Essential functionality that makes the SQL runner immediately usable for data analysts.*
@@ -45,22 +51,16 @@ A high-performance, web-based SQL query runner component designed for speed and 
 -   **Notification System**: Optional "Notify Me" button for long-running queries that sends a browser notification when the query completes.
     - *Why it matters*: For queries that take minutes to run, analysts can switch to other tasks and get notified when results are ready, rather than watching a loading spinner.
 
-## 🛠️ Technology Stack
+## Technology Stack & Key Libraries
 
--   **Framework**: [React 18](https://react.dev/)
--   **Language**: [TypeScript](https://www.typescriptlang.org/)
--   **Build Tool**: [Vite](https://vitejs.dev/)
--   **State Management**: React Context API & Custom Hooks
--   **Styling**: CSS Modules for scoped, maintainable styles
+-   `React`, `Vite`, and `Typescript` - Framework and Build Tool
+-   `React Context API` and `Custom Hooks` - State Management
+-   `CSS Modules` - Styling
+-   `@uiw/react-codemirror` - SQL Editor Interface
+-   `@tanstack/react-virtual` - Efficient rendering of large result sets (virtualization)
+-   `react-split-pane` - Resizable layout panes
 
-### Key Libraries
-
--   `@uiw/react-codemirror` - For the robust SQL editor interface.
--   `@tanstack/react-virtual` - For efficient rendering of large result sets (virtualization).
--   `react-split-pane` - For the resizable layout panes.
--   `msw` - For implementation of the mock API layer.
-
-## ⚡ Performance & Optimizations
+## Performance & Optimizations
 
 -   **Row Virtualization**: The results table uses virtualization to render only the visible rows. This allows the application to handle datasets of 100,000+ rows with constant memory usage and smooth scrolling.
 -   **Data Loading with Pagination**: Pagination fetches only the data needed for the current viewport. Intelligent page caching prevents redundant API calls when scrolling back to previously viewed rows.
@@ -68,7 +68,7 @@ A high-performance, web-based SQL query runner component designed for speed and 
 -   **Smart Row Caching**: Map-based cache provides O(1) row lookups and tracks currently loading pages to prevent duplicate fetch requests, ensuring each data page is fetched exactly once.
 -   **Memoization**: `useMemo` and `useCallback` are strategically used to prevent unnecessary re-renders of components.
 
-## ⏱️ Page Load Time
+## Page Load Time
 
 Typical load time: **< 300ms** (Locally served)
 *Measured via Chrome DevTools Network tab (Load event).*
@@ -79,7 +79,59 @@ To measure it yourself:
 3. Refresh the page.
 4. Check the red "Load" metric at the bottom of the pane.
 
-## 🎥 Walkthrough
+## Code Quality & Maintainability
 
-[Link to Walkthrough Video]
-*(Please add your video link here)*
+- **Component-Based Architecture**: Each feature is isolated in its own folder with co-located styles and logic
+- **Custom Hooks**: Reusable logic extracted into hooks like `useLocalStoragePersistence`, `useClickOutside`, and `usePolling`
+- **CSS Modules**: Scoped styling prevents conflicts and makes components portable
+- **TypeScript**: Full type safety catches errors at compile-time and serves as inline documentation
+- **Context API Pattern**: Centralized state management that scales with application complexity
+- **Separation of Concerns**: UI components, business logic, and data fetching are cleanly separated
+
+## System Design & Architecture
+
+This section explains the end-to-end architecture of the SQL Runner, focusing on the async query execution flow designed for data warehouse operations.
+
+### Why Async Execution?
+
+Data analysts typically run queries against data warehouses where queries can take seconds to minutes to complete. Synchronous HTTP requests would timeout, so we implement an **asynchronous execution model** with polling.
+
+### Data Flow
+
+```
+User Action (Run Query)
+    ↓
+createQueryExecution() → returns executionId
+    ↓
+startPolling() 
+    ↓
+┌───────────────────────────────┐
+│ Poll Loop (every 1000ms)      │
+│   ↓                           │
+│ getQueryExecution()           │
+│   ↓                           │
+│ Check status                  │
+│   ├─ running → continue       │
+│   ├─ completed → stop & fetch │
+│   └─ failed → stop & error    │
+└───────────────────────────────┘
+    ↓
+fetchRows(offset=0, limit=50)
+    ↓
+Update rowsMap cache
+    ↓
+Render ResultsTable (virtualized)
+    ↓
+User scrolls → loadMoreRows()
+    ↓
+fetchRows(offset=N, limit=50)
+```
+
+### API Endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/api/query/execute` | POST | Create execution, return `executionId` |
+| `/api/query/execution` | GET | Get execution status and metadata |
+| `/api/query/rows` | GET | Fetch paginated rows |
+| `/api/query/cancel` | POST | Cancel running execution |

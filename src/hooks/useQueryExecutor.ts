@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import * as api from '../services/api';
 import { usePolling } from './usePolling';
 import { useQueryRows } from './useQueryRows';
@@ -11,11 +11,17 @@ export const useQueryExecutor = (notifyEnabled: boolean) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const notifyEnabledRef = useRef(notifyEnabled);
+
     const { rowsMap, setRowsMap, loadMoreRows, resetLoadingRanges } = useQueryRows(execution);
 
     const { startPolling, stopPolling } = usePolling({
         interval: QUERY_EXECUTION_POLLING_INTERVAL
     });
+
+    useEffect(() => {
+        notifyEnabledRef.current = notifyEnabled;
+    }, [notifyEnabled])
 
     const pollExecution = useCallback(async (executionId: string) => {
         try {
@@ -33,8 +39,7 @@ export const useQueryExecutor = (notifyEnabled: boolean) => {
                 });
                 setRowsMap(newMap);
 
-                // Show notification if enabled
-                if (notifyEnabled && exec.totalRows !== null && exec.executionTimeMs !== null) {
+                if (notifyEnabledRef.current && exec.totalRows !== null && exec.executionTimeMs !== null) {
                     showQueryCompleteNotification(exec.totalRows, exec.executionTimeMs);
                 }
 
@@ -44,8 +49,7 @@ export const useQueryExecutor = (notifyEnabled: boolean) => {
                 setIsLoading(false);
                 setError(exec.error?.message || 'Query failed');
 
-                // Show notification if enabled
-                if (notifyEnabled) {
+                if (notifyEnabledRef.current) {
                     showQueryFailedNotification(exec.error?.message || 'Query failed');
                 }
             } else if (exec.status === 'cancelled') {
@@ -57,7 +61,7 @@ export const useQueryExecutor = (notifyEnabled: boolean) => {
             setIsLoading(false);
             setError(err instanceof Error ? err.message : 'Failed to poll execution');
         }
-    }, [notifyEnabled, stopPolling, setRowsMap]);
+    }, [stopPolling, setRowsMap]);
 
     const runQuery = useCallback(async (queryToRun: string) => {
         if (!queryToRun.trim()) {
@@ -87,6 +91,7 @@ export const useQueryExecutor = (notifyEnabled: boolean) => {
             await api.cancelQueryExecution(execution.executionId);
             stopPolling();
             setIsLoading(false);
+            setExecution(null);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to cancel query');
         }
