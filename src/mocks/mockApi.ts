@@ -83,7 +83,7 @@ const simulateAsyncExecution = async (executionId: string) => {
     if (executionTime >= 15000) {
         if (currentExecution) {
             currentExecution.status = 'failed';
-            currentExecution.error = { message: 'Query timeout after 15 seconds' };
+            currentExecution.error = { message: 'Query timed out after 15 seconds' };
             currentExecution.finishedAt = new Date().toISOString();
         }
         return;

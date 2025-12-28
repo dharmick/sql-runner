@@ -66,7 +66,7 @@ GET /api/query-execution/{executionId}
     { "name": "tags", "type": "array" },
     { "name": "created_at", "type": "epoch" }
   ],
-  "error": null | { "message": "Query timeout after 15 seconds" }
+  "error": null | { "message": "Query timed out after 15 seconds" }
 }
 ```
 

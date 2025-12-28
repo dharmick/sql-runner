@@ -1,6 +1,7 @@
 import type { Row } from '../types/index';
+import type { ColumnMetadata } from '../types';
 
-// Helper to generate mock data
+// Helpers to generate mock data
 export const generateUsers = (offset: number, limit: number): Row[] => {
     return Array.from({ length: limit }, (_, i) => {
         const index = offset + i;
@@ -62,5 +63,73 @@ export const generateTransactions = (offset: number, limit: number): Row[] => {
             payment_method: ['credit_card', 'paypal', 'bank_transfer'][index % 3],
             created_at: 1703577600 + (index * 60) // Minute increments
         };
+    });
+};
+
+/**
+ * Generates mock CSV data for export
+ */
+export const generateMockCSVData = (columns: ColumnMetadata[]): string => {
+    // Header row
+    const headers = columns.map(col => col.name).join(',');
+
+    // Mock data rows (5 sample rows)
+    const mockRows = Array.from({ length: 5 }, (_, i) => {
+        return columns.map(col => {
+            switch (col.type) {
+                case 'number':
+                    return Math.floor(Math.random() * 1000);
+                case 'string':
+                    return `"Sample ${i + 1}"`;
+                case 'boolean':
+                    return Math.random() > 0.5;
+                case 'epoch':
+                    return Date.now() - Math.floor(Math.random() * 1000000);
+                case 'null':
+                    return 'null';
+                default:
+                    return `"value_${i + 1}"`;
+            }
+        }).join(',');
+    }).join('\n');
+
+    return `${headers}\n${mockRows}`;
+};
+
+/**
+ * Generates mock JSON data for export
+ */
+export const generateMockJSONData = (columns: ColumnMetadata[]): Row[] => {
+    // Mock data rows (5 sample rows)
+    return Array.from({ length: 5 }, (_, i) => {
+        const row: Row = {};
+        columns.forEach(col => {
+            switch (col.type) {
+                case 'number':
+                    row[col.name] = Math.floor(Math.random() * 1000);
+                    break;
+                case 'string':
+                    row[col.name] = `Sample ${i + 1}`;
+                    break;
+                case 'boolean':
+                    row[col.name] = Math.random() > 0.5;
+                    break;
+                case 'epoch':
+                    row[col.name] = Date.now() - Math.floor(Math.random() * 1000000);
+                    break;
+                case 'json':
+                    row[col.name] = { key: `value_${i + 1}` };
+                    break;
+                case 'array':
+                    row[col.name] = [`item_${i + 1}_1`, `item_${i + 1}_2`];
+                    break;
+                case 'null':
+                    row[col.name] = null;
+                    break;
+                default:
+                    row[col.name] = `value_${i + 1}`;
+            }
+        });
+        return row;
     });
 };
