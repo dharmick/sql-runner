@@ -63,9 +63,10 @@ A high-performance, web-based SQL query runner component designed for speed and 
 ## ⚡ Performance & Optimizations
 
 -   **Row Virtualization**: The results table uses virtualization to render only the visible rows. This allows the application to handle datasets of 100,000+ rows with constant memory usage and smooth scrolling.
--   **Debounced State Updates**: Data fetches on scroll are debounced to reduce the number of API calls.
+-   **Data Loading with Pagination**: Pagination fetches only the data needed for the current viewport. Intelligent page caching prevents redundant API calls when scrolling back to previously viewed rows.
+-   **Debounced Scroll Events**: Data fetches triggered by scrolling are debounced (550ms) to reduce API call frequency and prevent request waterfalls during rapid scrolling.
+-   **Smart Row Caching**: Map-based cache provides O(1) row lookups and tracks currently loading pages to prevent duplicate fetch requests, ensuring each data page is fetched exactly once.
 -   **Memoization**: `useMemo` and `useCallback` are strategically used to prevent unnecessary re-renders of components.
--   **Efficient Asset Loading**: Vite's code-splitting ensures that only necessary code is loaded for the initial paint.
 
 ## ⏱️ Page Load Time
 
