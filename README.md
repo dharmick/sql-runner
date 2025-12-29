@@ -1,4 +1,4 @@
-# Atlan SQL Runner
+# SQL Runner
 
 A high-performance, web-based SQL query runner component designed for speed and usability. This application allows users to execute SQL queries and visualize results efficiently, even with large datasets.
 
@@ -6,7 +6,7 @@ A high-performance, web-based SQL query runner component designed for speed and 
 
 -   **Live Demo**: [https://sql-client.netlify.app](https://sql-client.netlify.app)
 
--   **Walkthrough Video**: Coming soon
+-   **Walkthrough Video**: [Google Drive](https://drive.google.com/file/d/16pYZpr6XdI3eYEeO_dFioYe_wDD_aJi_/view?usp=sharing)
 
 ## Features
 
